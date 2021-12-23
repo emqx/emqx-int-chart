@@ -1,0 +1,121 @@
+# Default values for emqx-init-chart
+
+##################################
+## kube-prometheus-stack
+
+kube-prometheus-stack:
+  enabled: true
+
+  # namespaceOverride: prom
+
+  # grafana:
+  #   namespaceOverride: prom
+
+  # kube-state-metrics:
+  #   namespaceOverride: prom
+
+  # prometheus-node-exporter:
+  #   namespaceOverride: prom
+
+##################################
+## prometheus-pushgateway
+
+prometheus-pushgateway:
+  enabled: true
+
+  serviceMonitor:
+    enabled: true
+    namespace: init-chart
+
+##################################
+## emqx-ee
+
+emqx-ee:
+  enabled: true
+
+  emqxLoadedPlugins: >
+    {emqx_management, true}.
+    {emqx_recon, true}.
+    {emqx_retainer, true}.
+    {emqx_dashboard, true}.
+    {emqx_telemetry, true}.
+    {emqx_rule_engine, true}.
+    {emqx_bridge_mqtt, false}.
+    {emqx_prometheus, true}.
+
+  service:
+    ## Service type
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+
+
+  emqxConfig:
+    EMQX_PROMETHEUS__PUSH__GATEWAY__SERVER:  http://my-emqx-prometheus-pushgateway.default.svc.cluster.local:9091
+
+##################################
+## mongodb
+
+mongodb:
+  enabled: true
+
+  auth:
+    usernames: ["root"]
+    passwords: ["public"]
+    databases: ["mqtt"]
+
+##################################
+## redis
+
+# https://artifacthub.io/packages/helm/bitnami/redis
+redis:
+  enabled: true
+
+  global:
+    redis:
+      password: "public"
+
+##################################
+# postgresql
+
+# https://artifacthub.io/packages/helm/bitnami/postgresql
+postgresql:
+  enabled: true
+
+  global:
+    postgresql:
+      postgresqlUsername: "postgres"
+      postgresqlPassword: "postgres"
+
+  initdbScripts:
+    init.sql: |
+      CREATE USER chaos WITH PASSWORD 'public';
+      CREATE DATABASE mqtt;
+      GRANT ALL PRIVILEGES ON DATABASE mqtt TO chaos;
+      \c mqtt chaos;
+      CREATE TABLE t_mqtt_msg (
+        id SERIAL primary key,
+        msgid character varying(64),
+        sender character varying(64),
+        topic character varying(255),
+        qos integer,
+        payload text,
+        arrived timestamp without time zone
+      );
+
+##################################
+## kafka
+
+kafka:
+  enabled: true
+
+  provisioning:
+    enabled: true
+
+    topics:
+      - name: testTopic
+        partitions: 1
+        replicationFactor: 1
+        config:
+          max.message.bytes: 64000
+          flush.messages: 1
