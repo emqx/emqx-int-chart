@@ -6,16 +6,24 @@
 kube-prometheus-stack:
   enabled: true
 
-  # namespaceOverride: prom
+  grafana.ini:
+    server:
+      domain: af658517764474ba68d8546de190dcb7-1790545472.ap-southeast-1.elb.amazonaws.com
+      root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+      serve_from_sub_path: true
 
-  # grafana:
-  #   namespaceOverride: prom
+    paths:
+      data: /var/lib/grafana/
+      logs: /var/log/grafana
+      plugins: /var/lib/grafana/plugins
+      provisioning: /etc/grafana/provisioning
+    analytics:
+      check_for_updates: true
+    log:
+      mode: console
+    grafana_net:
+      url: https://grafana.net
 
-  # kube-state-metrics:
-  #   namespaceOverride: prom
-
-  # prometheus-node-exporter:
-  #   namespaceOverride: prom
 
 ##################################
 ## prometheus-pushgateway
@@ -25,7 +33,7 @@ prometheus-pushgateway:
 
   serviceMonitor:
     enabled: true
-    namespace: init-chart
+    namespace: emqx-init
 
 ##################################
 ## emqx-ee
@@ -49,9 +57,8 @@ emqx-ee:
     annotations:
       service.beta.kubernetes.io/aws-load-balancer-type: nlb
 
-
   emqxConfig:
-    EMQX_PROMETHEUS__PUSH__GATEWAY__SERVER:  http://my-emqx-prometheus-pushgateway.default.svc.cluster.local:9091
+    EMQX_PROMETHEUS__PUSH__GATEWAY__SERVER:  http://emqx-init-prometheus-pushgateway.emqx-init.svc.cluster.local:9091
 
 ##################################
 ## mongodb
