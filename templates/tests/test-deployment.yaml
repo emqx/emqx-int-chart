@@ -8,12 +8,14 @@ metadata:
 spec:
   containers:
     - name: test-deployment
-      image: python:3.8.2-alpine
+      # image: python:3.8.2-alpine
+      image: brianbinbin/emqx-init-chart
       command: ["/bin/sh","-c"]
       args:
         - echo test starting;
-          apk add --no-cache git openssh && git clone https://github.com/emqx/paho.mqtt.testing.git -b develop-4.0 && pip3 install pytest && pytest -v paho.mqtt.testing/interoperability/test_client/V5/test_connect.py -k test_basic --host '{{ .Release.Name }}-emqx-ee.{{ .Release.Namespace }}.svc.cluster.local';
-          apk add --no-cache netcat-openbsd && nc -vz {{ .Release.Name }}-emqx-ee.{{ .Release.Namespace }}.svc.cluster.local 18083;
+          # apk add --no-cache git openssh && git clone https://github.com/emqx/paho.mqtt.testing.git -b develop-4.0 && pip3 install pytest && pytest -v paho.mqtt.testing/interoperability/test_client/V5/test_connect.py -k test_basic --host '{{ .Release.Name }}-emqx-ee.{{ .Release.Namespace }}.svc.cluster.local';
+          # apk add --no-cache netcat-openbsd && nc -vz {{ .Release.Name }}-emqx-ee.{{ .Release.Namespace }}.svc.cluster.local 18083;
+          git clone https://github.com/emqx/paho.mqtt.testing.git -b develop-4.0 && pytest -v paho.mqtt.testing/interoperability/test_client/V5/test_connect.py -k test_basic --host '{{ .Release.Name }}-emqx-ee.{{ .Release.Namespace }}.svc.cluster.local';
           nc -vz {{ .Release.Name }}-grafana.{{ .Release.Namespace }}.svc.cluster.local 80;
           echo test done;
   restartPolicy: Never
