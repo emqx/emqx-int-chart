@@ -2,9 +2,21 @@
 
 ##################################
 ## kube-prometheus-stack
-
+##################################
 kube-prometheus-stack:
   enabled: true
+
+  grafana:
+    enabled: false
+
+##################################
+## grafana
+##################################
+grafana:
+  enabled: true
+
+  adminUser: admin
+  adminPassword: admin123
 
   grafana.ini:
     server:
@@ -24,9 +36,9 @@ kube-prometheus-stack:
     grafana_net:
       url: https://grafana.net
 
-
 ##################################
 ## prometheus-pushgateway
+##################################
 
 prometheus-pushgateway:
   enabled: true
@@ -37,6 +49,7 @@ prometheus-pushgateway:
 
 ##################################
 ## emqx-ee
+##################################
 
 emqx-ee:
   enabled: true
@@ -62,6 +75,7 @@ emqx-ee:
 
 ##################################
 ## mongodb
+##################################
 
 mongodb:
   enabled: true
@@ -73,6 +87,7 @@ mongodb:
 
 ##################################
 ## redis
+##################################
 
 # https://artifacthub.io/packages/helm/bitnami/redis
 redis:
@@ -84,6 +99,7 @@ redis:
 
 ##################################
 # postgresql
+##################################
 
 # https://artifacthub.io/packages/helm/bitnami/postgresql
 postgresql:
@@ -112,6 +128,7 @@ postgresql:
 
 ##################################
 ## kafka
+##################################
 
 kafka:
   enabled: true

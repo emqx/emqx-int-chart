@@ -2,6 +2,9 @@ dependencies:
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
   version: 23.1.6
+- name: grafana
+  repository: https://grafana.github.io/helm-charts
+  version: 6.20.3
 - name: prometheus-pushgateway
   repository: https://prometheus-community.github.io/helm-charts
   version: 1.13.0
@@ -20,5 +23,5 @@ dependencies:
 - name: kafka
   repository: https://charts.bitnami.com/bitnami
   version: 14.7.1
-digest: sha256:fb4661eba5b3a7cd48de5edc1ff112b3199afb9054c1922159f15cde44de3a1d
-generated: "2021-12-23T11:20:38.024453+08:00"
+digest: sha256:d4a16ee75f221b1a2aa07582353b2f72abaebbc3d5706c0f5ef5077ecdb3e26c
+generated: "2021-12-28T07:28:02.629985018Z"

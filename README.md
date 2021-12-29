@@ -2,23 +2,13 @@
 ```bash
 helm install ${release-name} . --namespace ${release-namespace} --create-namespace \
 --set prometheus-pushgateway.serviceMonitor.namespace=${release-namespace} \
+--set grafana."grafana\.ini".server.domain=${nginx-ingress}
 --set emqx-ee.emqxConfig.EMQX_PROMETHEUS__PUSH__GATEWAY__SERVER=http://${release-name}-prometheus-pushgateway.${release-namespace}.svc.cluster.local:9091
 ```
 
-## Config grafana
-```bash
-k edit cm ${release-name}-grafana -n ${release-namespace}
-
-[server]
-domain = ${nginx_ingress}
-root_url = %(protocol)s://%(domain)s:%(http_port)s/grafana/
-serve_from_sub_path = true
-```
-> Don't forget to restart grafana pod
-
 ## Testing
 ```bash
-helm test emqx-init --logs -n emqx-init
+helm test ${release-name} --logs -n ${release-namespace}
 ```
 
 ## Uninstall
@@ -34,6 +24,44 @@ kubectl delete crd prometheusrules.monitoring.coreos.com
 kubectl delete crd servicemonitors.monitoring.coreos.com
 kubectl delete crd thanosrulers.monitoring.coreos.com
 ```
+
+## Config prometheus and grafana
+### Install ingress for prometheus and grafana
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: ${release-namespace}
+  name: prom-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /prom(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ${promethues-address}
+            port:
+              number: 9090
+      - path: /grafana(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ${grafana-address}
+            port:
+              number: 80
+```
+
+### Url
+> http://${nginx-ingress}/prom/graph
+> http://${nginx-ingress}/grafana/login
+
+### Add Data Sources
+> ${prometheus-service}.${release-namespace}.svc.cluster.local
 
 ## EMQX rule engine Configuration
 ### Postgres
