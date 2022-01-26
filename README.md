@@ -36,6 +36,7 @@ kubectl delete crd prometheusrules.monitoring.coreos.com
 kubectl delete crd servicemonitors.monitoring.coreos.com
 kubectl delete crd thanosrulers.monitoring.coreos.com
 ```
+**Note**: Don't forget to delete pvc if you need.
 
 ## Config prometheus and grafana
 ### Install ingress for prometheus and grafana
