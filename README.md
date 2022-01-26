@@ -77,11 +77,11 @@ http://${nginx-ingress}/grafana/login
 
 ## EMQX rule engine Configuration
 ### Postgres
-> db: mqtt
-> user: chaos
-> passwd: public
+> db: mqtt  
+user: chaos  
+passwd: public
 
 ### Kafka
-> user:
-> passwd:
-> topic: testTopic
+> user:  
+passwd:  
+topic: testTopic
