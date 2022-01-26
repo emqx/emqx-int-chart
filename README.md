@@ -69,11 +69,11 @@ spec:
 ```
 
 ### Url
-> http://${nginx-ingress}/prom/graph
-> http://${nginx-ingress}/grafana/login
+> http://${nginx-ingress}/prom/graph  
+http://${nginx-ingress}/grafana/login
 
 ### Add Data Sources
-> ${prometheus-service}.${release-namespace}.svc.cluster.local
+> ${prometheus-service-name}.${release-namespace}.svc.cluster.local
 
 ## EMQX rule engine Configuration
 ### Postgres
