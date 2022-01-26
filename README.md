@@ -56,14 +56,14 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: ${promethues-address}
+            name: ${promethues-service-name}
             port:
               number: 9090
       - path: /grafana(/|$)(.*)
         pathType: Prefix
         backend:
           service:
-            name: ${grafana-address}
+            name: ${grafana-service-name}
             port:
               number: 80
 ```
